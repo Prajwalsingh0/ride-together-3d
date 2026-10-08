@@ -1,0 +1,20 @@
+{
+  "name": "ride-together",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ride Together 3D — multiplayer motorcycle riding with live 3D riders on map",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "mobile": "npm run start --workspace=apps/mobile",
+    "server": "npm run dev --workspace=apps/server",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,21 @@
+# Note: Docker is not available in the current sandbox.
+# This file is provided for local development environments that have Docker.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ride
+      POSTGRES_PASSWORD: ride
+      POSTGRES_DB: ride_together
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ride -d ride_together"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
