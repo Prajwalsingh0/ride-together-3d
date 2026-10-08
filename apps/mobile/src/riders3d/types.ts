@@ -1,18 +1,20 @@
-/** Shared types for the 3D rider prototype (Milestone 1 — simulated). */
+/** Shared types for the 3D rider system (M1+M2). */
 
 export type RiderId = string;
 
 export interface SimulatedRider {
   id: RiderId;
   name: string;
-  color: string; // motorcycle body color
-  /** Local 3D position in meters (X = east, Z = north, Y = up) */
+  color: string;
+  /** Geographic position (source of truth for M2+) */
+  latitude: number;
+  longitude: number;
+  /** Local ENU meters (derived from geo for 3D scene) */
   position: { x: number; y: number; z: number };
-  /** Heading in radians (0 = +Z / north) */
+  /** Heading in radians (0 = north / +Z) */
   heading: number;
   /** Speed m/s */
   speed: number;
-  /** Whether currently moving */
   moving: boolean;
 }
 
