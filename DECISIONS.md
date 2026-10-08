@@ -72,3 +72,17 @@
 **Date**: 2026-10-08
 **Status**: Accepted
 **Decision**: Meaningful commits per milestone. `.env.example` only. Never commit tokens, keys, or real credentials.
+
+## ADR-010: Milestone 1 3D Stack
+**Date**: 2026-10-08
+**Status**: Accepted for M1
+**Context**: Need a runnable 3D multi-rider prototype without real map/GPS, in a constrained environment.
+**Decision**:
+- Use `expo-gl` + `expo-three` + `three` (imperative Three.js, not R3F) to minimize dependency surface.
+- Procedural low-poly motorcycle + rider (boxes / cylinders / spheres) instead of GLB for M1.
+- Simulated movement in a local metric plane (X east, Z north, Y up).
+- Camera modes: follow / group / free.
+**Consequences**:
+- Fast to implement and verify on web.
+- Visual quality is placeholder — production GLB + animations deferred.
+- Coordinate system is temporary; M2 will introduce geographic ENU conversion.
