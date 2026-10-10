@@ -1,0 +1,94 @@
+// Production schema — use with PostgreSQL when available.
+// Runtime MVP uses in-memory store (src/database/memory.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String           @id @default(cuid())
+  name         String
+  email        String           @unique
+  passwordHash String
+  avatar       String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  profile      RiderProfile?
+  ridesOwned   Ride[]           @relation("RideOwner")
+  memberships  RideMember[]
+  locations    LocationUpdate[]
+}
+
+model RiderProfile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bikeModel   String?
+  bikeColor   String?
+  helmetStyle String?
+  riderModel  String?
+}
+
+model Ride {
+  id          String           @id @default(cuid())
+  name        String
+  joinCode    String           @unique
+  createdBy   String
+  owner       User             @relation("RideOwner", fields: [createdBy], references: [id])
+  status      RideStatus       @default(LOBBY)
+  destination String?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime         @default(now())
+  members     RideMember[]
+  locations   LocationUpdate[]
+}
+
+model RideMember {
+  id       String     @id @default(cuid())
+  rideId   String
+  userId   String
+  role     MemberRole @default(MEMBER)
+  joinedAt DateTime   @default(now())
+  leftAt   DateTime?
+  ride     Ride       @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([rideId, userId])
+  @@index([rideId])
+  @@index([userId])
+}
+
+model LocationUpdate {
+  id        String   @id @default(cuid())
+  rideId    String
+  userId    String
+  latitude  Float
+  longitude Float
+  heading   Float?
+  speed     Float?
+  accuracy  Float?
+  timestamp DateTime
+  createdAt DateTime @default(now())
+  ride      Ride     @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([rideId, timestamp])
+  @@index([userId, timestamp])
+}
+
+enum RideStatus {
+  LOBBY
+  ACTIVE
+  ENDED
+}
+
+enum MemberRole {
+  OWNER
+  MEMBER
+}
